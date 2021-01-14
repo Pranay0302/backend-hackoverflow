@@ -1,0 +1,23 @@
+{
+  "name": "backend-hackoverflow",
+  "version": "1.0.0",
+  "description": "backend code",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pranay0302/backend-hackoverflow.git"
+  },
+  "author": "Pranay",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pranay0302/backend-hackoverflow/issues"
+  },
+  "homepage": "https://github.com/Pranay0302/backend-hackoverflow#readme",
+  "devDependencies": {
+    "express": "^4.17.1"
+  }
+}
