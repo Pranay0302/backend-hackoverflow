@@ -5,15 +5,16 @@ const db = require('monk')(URI)
 const router = express.Router();
 const todoDB = db.get('todo')
 
-router.get('/api/todo', (req: Request, res: Response) => {
-    const all = todoDB.find({}).then((docs: any) => {
+router.get('/api/todo', async(req: Request, res: Response) => {
+    const all = await todoDB.find({}).then((docs: any) => {
         console.log(docs)
         return res.send(docs);
     })
+    // console.log(all);
 })
 
-router.post('/api/todo', (req: Request, res: Response) => {
-    const data: IToDo = { title: '', description: '' }
+router.post('/api/todo', async(req: Request, res: Response) => {
+    const data: IToDo = await { title: '', description: '' }
     req.on('data', (chunk) => {
         const x = JSON.parse(chunk)
         data.title = x.title
@@ -23,6 +24,7 @@ router.post('/api/todo', (req: Request, res: Response) => {
         console.log(data)
         todoDB.insert({ title: data.title, description: data.description });
     })
+    console.log(req.body);
     return res.send('new todo created');
 })
 
