@@ -9,7 +9,6 @@ const todoDB = db.get('todo')
 
 router.get('/api/todo', async (req: Request, res: Response) => {
     const all = await todoDB.find({}).then((docs: any) => {
-        console.log(docs)
         return res.send(docs);
     })
     // console.log(all);
@@ -23,14 +22,10 @@ router.post('/api/todo', async (req: Request, res: Response) => {
         data.description = x.description
     })
     await req.on('end', () => {
-        console.log(data)
         todoDB.insert({ title: data.title, description: data.description });
         return res.send('new todo created');
     })
-    console.log("req.body is");
-    console.log(req.body)
     if (!(Object.keys(req.body).length === 0 && req.body.constructor === Object)) {
-        console.log("in req.body");
         todoDB.insert({ title: req.body.title, description: req.body.description });
         return res.send('new todo from req.body');
     }
