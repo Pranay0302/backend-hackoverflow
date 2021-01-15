@@ -6,8 +6,7 @@
     "scripts": {
         "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
         "build": "tsc",
-        "prestart": "npm run build",
-        "start": "cd dist && node .",
+        "start": "npm run prebuild && ts-node src/index.ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -31,6 +30,7 @@
     },
     "dependencies": {
         "dotenv": "^8.2.0",
-        "mongoose": "*"
+        "monk": "^7.3.2",
+        "ts-node": "^9.1.1"
     }
 }
