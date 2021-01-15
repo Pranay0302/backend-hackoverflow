@@ -21,18 +21,21 @@ router.post('/api/places', async (req: Request, res: Response) => {
         data.latitude = x.latitude
         data.count = 0
     })
-    await req.on('end', async () => {
-        const x = await placesDB.findOne({ longitude: data.longitude, latitude: data.latitude })
-        if (x) {
+    await req.on('end',  () => {
+        const x = placesDB.findOne({ longitude: data.longitude, latitude: data.latitude })
+        if (x){
             placesDB.update(x._id, {$set:{ count: x.count + 1 }});
             return res.send('updated with ' + (x.count + 1));
         }
         else {
-            placesDB.insert({ longitude: data.longitude, latitude: data.latitude, count: 1 });
+            placesDB.insert({ longitude: data.longitude, latitude: data.latitude});
             return res.send('new place created');
         }
-
-    })
+         })
+        if (!(Object.keys(req.body).length === 0 && req.body.constructor === Object)) {
+        placesDB.insert({ longitude: req.body.longitude, latitude: req.body.latitude , count:1});
+        return res.send('new place from req.body');
+    }
 })
 
 
