@@ -7,7 +7,7 @@ const db = require('monk')(URI)
 const router = express.Router();
 const todoDB = db.get('todo')
 
-router.get('/api/todo', async(req: Request, res: Response) => {
+router.get('/api/todo', async (req: Request, res: Response) => {
     const all = await todoDB.find({}).then((docs: any) => {
         console.log(docs)
         return res.send(docs);
@@ -15,19 +15,26 @@ router.get('/api/todo', async(req: Request, res: Response) => {
     // console.log(all);
 })
 
-router.post('/api/todo', async(req: Request, res: Response) => {
+router.post('/api/todo', async (req: Request, res: Response) => {
     const data: IToDo = await { title: '', description: '' }
-    req.on('data', (chunk) => {
+    await req.on('data', (chunk) => {
         const x = JSON.parse(chunk)
         data.title = x.title
         data.description = x.description
     })
-    req.on('end', () => {
+    await req.on('end', () => {
         console.log(data)
         todoDB.insert({ title: data.title, description: data.description });
+        return res.send('new todo created');
     })
-    console.log(req.body);
-    return res.send('new todo created');
+    console.log("req.body is");
+    console.log(req.body)
+    if (!(Object.keys(req.body).length === 0 && req.body.constructor === Object)) {
+        console.log("in req.body");
+        // todoDB.insert({ title: req.body.title, description: req.body.description });
+        return res.send('new todo from req.body');
+    }
+
 })
 
 
