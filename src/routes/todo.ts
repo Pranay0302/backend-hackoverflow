@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import { type } from 'os';
 import { IToDo } from '../models/IToDo';
 const URI = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/todo';
 const db = require('monk')(URI)
@@ -14,16 +13,16 @@ router.get('/api/todo', (req: Request, res: Response) => {
 })
 
 router.post('/api/todo', (req: Request, res: Response) => {
-    // console.log(req);
-    let data: IToDo
+    const data: IToDo = { title: '', description: '' }
     req.on('data', (chunk) => {
-        data = JSON.parse(chunk)
+        const x = JSON.parse(chunk)
+        data.title = x.title
+        data.description = x.description
     })
     req.on('end', () => {
         console.log(data)
+        todoDB.insert({ title: data.title, description: data.description });
     })
-    console.log(typeof (data))
-    todoDB.insert({ title: data.title, description: data.description });
     return res.send('new todo created');
 })
 
