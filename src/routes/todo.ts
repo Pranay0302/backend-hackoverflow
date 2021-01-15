@@ -1,29 +1,30 @@
 import express, { Request, Response } from 'express';
-import { type } from 'os';
-import { IToDo } from '../models/IToDo';
-const URI = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/todo';
-const db = require('monk')(URI)
+import {todo} from "../models/ToDo";
+// const check = require('../models/ToDo');
 const router = express.Router();
-const todoDB = db.get('todo')
 
-router.get('/api/todo', (req: Request, res: Response) => {
-    const all = todoDB.find({}).then((docs: any) => {
-        console.log(docs)
-        return res.send(docs);
-    })
+router.get('/api/todo' , async(req: Request, res: Response) => {
+        try {
+            const gtodo = await todo.find({});
+            res.send(gtodo);
+        } catch (error) {
+            res.status(404).send(error);
+        }
+    // res.send("checkingg");
 })
 
-router.post('/api/todo', (req: Request, res: Response) => {
-    // console.log(req);
-    let data: IToDo
-    req.on('data', (chunk) => {
-        data = JSON.parse(chunk)
+router.post('/api/todo', async(req: Request, res: Response) => {
+
+    const ptodo = new todo({
+        title: req.body.title,
+        description: req.body.description
     })
-    req.on('end', () => {
-        console.log(data)
-    })
-    console.log(typeof (data))
-    todoDB.insert({ title: data.title, description: data.description });
+    try {
+        const saved = await ptodo.save()
+        res.send(saved);
+    } catch (error) {
+        res.status(404).send(error);
+    }
     return res.send('new todo created');
 })
 

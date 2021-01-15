@@ -1,16 +1,17 @@
-// import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
-// const todoSchema = new mongoose.Schema({
-//     title: {
-//         type: String,
-//         required: true
-//     },
-//     description: {
-//         type: String,
-//         required: true,
-//     }
-// })
+const todoSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    description: {
+        type: String,
+        required: true,
+    }
+})
 
-// const ToDo = mongoose.model('ToDo', todoSchema);
+const todo = mongoose.model('ToDo', todoSchema);
+export {todo}
 
-// export { ToDo }
