@@ -31,7 +31,7 @@ router.post('/api/todo', async (req: Request, res: Response) => {
     console.log(req.body)
     if (!(Object.keys(req.body).length === 0 && req.body.constructor === Object)) {
         console.log("in req.body");
-        // todoDB.insert({ title: req.body.title, description: req.body.description });
+        todoDB.insert({ title: req.body.title, description: req.body.description });
         return res.send('new todo from req.body');
     }
 
