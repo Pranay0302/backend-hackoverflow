@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import { IToDo } from '../models/IToDo';
-const URI = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/todo';
+import dotenv from "dotenv";
+dotenv.config();
+const URI = process.env.MONGODB_URL;
 const db = require('monk')(URI)
 const router = express.Router();
 const todoDB = db.get('todo')
