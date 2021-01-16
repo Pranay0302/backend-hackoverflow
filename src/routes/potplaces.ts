@@ -14,33 +14,42 @@ router.get('/api/places', async (req: Request, res: Response) => {
 })
 
 router.post('/api/places', async (req: Request, res: Response) => {
-    const data: ICO = { longitude: 0.000000, latitude: 0.000000, count: 0 }
-    await req.on('data', (chunk) => {
-        const x = JSON.parse(chunk)
-        data.longitude = x.longitude
-        data.latitude = x.latitude
-        data.count = 0
+    const data: ICO = { longitude: 0.000000, latitude: 0.000000, count: 0, contact_phone: 0, address: '', imageLink: '' }
+    req.on('data', (chunk) => {
+        const x: ICO = JSON.parse(chunk);
+        data.longitude = x.longitude;
+        data.latitude = x.latitude;
+        data.count = 1;
+        data.address = x.address;
+        data.contact_phone = x.contact_phone;
+        data.imageLink = x.imageLink;
     })
-    await req.on('end', async () => {
-        const x = await placesDB.findOne({ longitude: data.longitude, latitude: data.latitude })
+    req.on('end', async () => {
+        const x = await placesDB.findOne({ longitude: data.longitude, latitude: data.latitude });
         if (x) {
-            placesDB.update(x._id, { $set: { count: x.count + 1 } });
-            return res.send('updated with ' + (x.count + 1));
+            placesDB.update(x._id, { $set: { count: x.count + 1 }, $push: { address: data.address, contact_phone: data.contact_phone, imageLink: data.imageLink } });
+            return res.send('updated with ' + (x.count + 1) + ' in end');
         }
         else {
-            placesDB.insert({ longitude: data.longitude, latitude: data.latitude });
-            return res.send('new place created');
+            placesDB.insert({ longitude: data.longitude, latitude: data.latitude, count: data.count, address: [data.address], contact_phone: [data.contact_phone], imageLink: [data.imageLink] });
+            return res.send('new place created from req.on');
         }
     })
     if (!(Object.keys(req.body).length === 0 && req.body.constructor === Object)) {
-        const x = await placesDB.findOne({ longitude: req.body.longitude, latitude: req.body.latitude })
+        data.longitude = req.body.longitude;
+        data.latitude = req.body.latitude;
+        data.count = 1;
+        data.address = req.body.address;
+        data.contact_phone = req.body.contact_phone;
+        data.imageLink = req.body.imageLink;
+        const x = await placesDB.findOne({ longitude: data.longitude, latitude: data.latitude });
         if (x) {
-            placesDB.update(x._id, { $set: { count: x.count + 1 } });
-            return res.send('updated with ' + (x.count + 1));
+            placesDB.update(x._id, { $set: { count: x.count + 1 }, $push: { address: data.address, contact_phone: data.contact_phone, imageLink: data.imageLink } });
+            return res.send('updated with ' + (x.count + 1) + ' in end');
         }
         else {
-            placesDB.insert({ longitude: data.longitude, latitude: data.latitude });
-            return res.send('new place created from req.body');
+            placesDB.insert({ longitude: data.longitude, latitude: data.latitude, count: data.count, address: [data.address], contact_phone: [data.contact_phone], imageLink: [data.imageLink] });
+            return res.send('new place created from req.on');
         }
     }
 })
