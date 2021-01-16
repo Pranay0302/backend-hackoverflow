@@ -5,4 +5,6 @@ export interface ICO{
     contact_phone:number;
     address:string;
     imageLink:string;
+    full_name:string;
+    email:string;
 }
